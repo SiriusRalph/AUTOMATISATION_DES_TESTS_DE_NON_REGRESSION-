@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Selenium Automation Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_dev.css') }}" />
+</head>
+<body>
+<!-- TEST TEMPLATE DASHBOARD_DEV -->
+
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-plane"></i>
+                </div>
+                <span class="logo-text">Royal Air Maroc</span>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Paramètres</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-version">v2.4.1</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <div class="header-left">
+                    <div class="header-eyebrow">Selenium QA Platform</div>
+                    <h1 class="header-title">Automation Dashboard</h1>
+                </div>
+                <div class="user-dropdown">
+                    <span class="user-name user-dropdown-toggle">
+                        <span class="user-avatar-icon"><i class="fas fa-user-circle"></i></span>
+                        Utilisateur <i class="fas fa-chevron-down chevron-icon"></i>
+                    </span>
+                    <div class="user-dropdown-menu">
+                        <a href="/profile"><i class="fas fa-user"></i> Profile</a>
+                        <form action="/login" method="POST" style="margin: 0;">
+                            <button type="submit" class="logout-button"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Script Editor Section -->
+            <div class="card animate">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Éditeur de Scripts Selenium</h2>
+                        <p class="card-subtitle">Créer et sauvegarder vos scripts de test</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form action="/dashboard_dev" method="POST">
+                        <input type="hidden" name="action" value="save_script">
+
+                        <div class="form-group">
+                            <label for="scriptName" class="form-label">Nom du Script</label>
+                            <input
+                                type="text"
+                                id="scriptName"
+                                name="scriptName"
+                                class="form-control"
+                                placeholder="MonScriptTest.py"
+                                required
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="scriptContent" class="form-label">Contenu du Script</label>
+                            <textarea
+                                id="scriptContent"
+                                name="scriptContent"
+                                class="form-control"
+                                placeholder="from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+driver = webdriver.Chrome()
+driver.get('https://example.com')
+# Votre code de test ici..."
+                                required
+                            ></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Enregistrer le Script
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Available Scripts -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Scripts disponibles</h2>
+                        <p class="card-subtitle">Gérer vos fichiers de scripts</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if script_files %}
+                      <div class="scroll-container"><ul class="list-group">
+                        {% for file in script_files %}
+                          <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="file-name"><i class="fas fa-file-code"></i> {{ file }}</span>
+                            <form method="GET" action="{{ url_for('download_script', filename=file) }}">
+                              <button type="submit" class="btn btn-sm btn-success">
+                                <i class="fas fa-download"></i> Télécharger
+                              </button>
+                            </form>
+                          </li>
+                        {% endfor %}
+                      </ul></div>
+                    {% else %}
+                      <div class="empty-state">
+                          <i class="fas fa-folder-open"></i>
+                          <p>Aucun script trouvé dans le dossier.</p>
+                      </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Script Upload Section -->
+            <div class="card animate delay-1">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Importer un Script</h2>
+                        <p class="card-subtitle">Charger un fichier depuis votre machine</p>
+                    </div>
+                </div>
+
+            <!-- Test Execution Section -->
+            <div class="card animate delay-2">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Exécuter un Test</h2>
+                        <p class="card-subtitle">Lancer vos scripts sur différents environnements</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form action="/run_test" method="POST">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="testScript" class="form-label">Script à Exécuter</label>
+                                <select id="testScript" name="testScript" class="form-control" required>
+                                    <option value="" disabled selected>Sélectionnez un script</option>
+                                    {% for script in script_files %}
+                                        <option value="{{ script }}">{{ script }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="browser" class="form-label">Navigateur</label>
+                                <select id="browser" name="browser" class="form-control" required>
+                                    <option value="chrome">Chrome</option>
+                                    <option value="firefox">Firefox</option>
+                                    <option value="edge">Microsoft Edge</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="environment" class="form-label">Environnement</label>
+                                <select id="environment" name="environment" class="form-control" required>
+                                    <option value="dev">Développement</option>
+                                    <option value="staging">Staging</option>
+                                    <option value="production">Production</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play-circle"></i> Lancer le Test
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Test Results Section -->
+            <div class="card animate delay-3">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div>
+                        <h2 class="card-title">Résultats des Tests</h2>
+                        <p class="card-subtitle">Historique complet des exécutions</p>
+                    </div>
+                    <a href="{{ url_for('dashboard_dev') }}" class="btn btn-outline btn-sm ms-auto">
+                        <i class="fas fa-sync-alt"></i> Actualiser
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-scroll-container">
+                        <table class="test-results">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Script</th>
+                                    <th>Navigateur</th>
+                                    <th>Statut</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in test_results %}
+                                <tr>
+                                    <td><span class="result-id">#{{ result['id'] }}</span></td>
+                                    <td><span class="script-name-cell"><i class="fas fa-file-code"></i> {{ result['script_name'] }}</span></td>
+                                    <td>{{ result['browser'] }}</td>
+                                    <td>
+                                        {% if result['status'] == 'Réussi' %}
+                                            <span class="status-badge status-success"><i class="fas fa-check-circle"></i> Réussi</span>
+                                        {% elif result['status'] == 'Échoué' %}
+                                            <span class="status-badge status-failed"><i class="fas fa-times-circle"></i> Échoué</span>
+                                        {% else %}
+                                            <span class="status-badge status-running"><i class="fas fa-spinner fa-spin"></i> En cours...</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ result['date'] }}</td>
+                                    <td>
+                                        <form method="post" action="/view_result_detail">
+                                            <input type="hidden" name="script_name" value="{{ result['script_name'] }}">
+                                            <input type="hidden" name="date" value="{{ result['date'] }}">
+                                            <button class="btn btn-outline btn-sm">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard_dev.js') }}"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.querySelector(".user-dropdown-toggle");
+        const menu = document.querySelector(".user-dropdown-menu");
+
+        toggle.addEventListener("click", function (e) {
+          e.stopPropagation();
+          menu.style.display = menu.style.display === "block" ? "none" : "block";
+        });
+
+        window.addEventListener("click", function () {
+          menu.style.display = "none";
+        });
+      });
+    </script>
+
+</body>
+</html>

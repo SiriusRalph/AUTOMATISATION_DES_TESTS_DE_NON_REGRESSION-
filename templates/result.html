@@ -1,0 +1,399 @@
+<!-- templates/result.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport de Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        :root {
+            --primary: #C1272D;
+            --primary-dark: #8f1a1f;
+            --primary-glow: rgba(193, 39, 45, 0.2);
+            --gold: #b89a5a;
+            --gold-light: #d4b87a;
+            --gold-dim: rgba(184, 154, 90, 0.12);
+            --success: #2dd4a0;
+            --success-bg: rgba(45, 212, 160, 0.1);
+            --success-border: rgba(45, 212, 160, 0.2);
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.1);
+            --danger-border: rgba(239, 68, 68, 0.2);
+            --warning: #f5a623;
+            --warning-bg: rgba(245, 166, 35, 0.08);
+            --warning-border: rgba(245, 166, 35, 0.2);
+            --bg: #0b0e14;
+            --card-bg: #12161f;
+            --card-border: rgba(255,255,255,0.06);
+            --input-bg: rgba(255,255,255,0.03);
+            --text-primary: #e8eaf0;
+            --text-secondary: rgba(232, 234, 240, 0.5);
+            --text-muted: rgba(232, 234, 240, 0.28);
+            --radius: 6px;
+            --radius-lg: 10px;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 3rem 1.5rem;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Grid texture */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 820px;
+            margin: 0 auto;
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── BACK LINK ── */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            letter-spacing: 0.04em;
+            margin-bottom: 2rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--gold-light); }
+        .back-link i { font-size: 0.75rem; }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        .page-eyebrow {
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-family: 'DM Mono', monospace;
+            margin-bottom: 8px;
+        }
+        .page-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.04) inset;
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+            position: relative;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .card-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--primary-glow);
+            border: 1px solid rgba(193,39,45,0.25);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+        .card-subtitle {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 1px;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* ── INFO GRID ── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: rgba(255,255,255,0.04);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .info-item {
+            background: var(--input-bg);
+            padding: 1rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transition: background 0.2s;
+        }
+        .info-item:hover { background: rgba(255,255,255,0.05); }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .info-value {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        /* ── STATUS BADGE ── */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.3rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            width: fit-content;
+        }
+        .status-success {
+            background: var(--success-bg);
+            color: var(--success);
+            border: 1px solid var(--success-border);
+        }
+        .status-danger {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid var(--danger-border);
+        }
+
+        /* ── CODE BLOCKS ── */
+        .code-block {
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 12.5px;
+            line-height: 1.75;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .code-block::-webkit-scrollbar { width: 4px; }
+        .code-block::-webkit-scrollbar-track { background: transparent; }
+        .code-block::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+        .code-block.warning {
+            background: var(--warning-bg);
+            border-color: var(--warning-border);
+            color: #e8c97a;
+        }
+
+        .no-errors {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+            color: var(--success);
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius);
+        }
+
+        /* ── DOWNLOAD BUTTON ── */
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 1.5rem;
+            background: var(--gold-dim);
+            border: 1px solid rgba(184,154,90,0.3);
+            color: var(--gold-light);
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-download:hover {
+            background: rgba(184,154,90,0.2);
+            border-color: var(--gold-light);
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(184,154,90,0.15);
+        }
+
+        @media (max-width: 600px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.6rem; }
+            body { padding: 2rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+    <a href="javascript:history.back()" class="back-link">
+        <i class="fas fa-arrow-left"></i> Retour au dashboard
+    </a>
+
+    <div class="page-header">
+        <div class="page-eyebrow">QA Automation · Royal Air Maroc</div>
+        <h1 class="page-title">Rapport de Test</h1>
+    </div>
+
+    <!-- General Info -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon"><i class="fas fa-file-alt"></i></div>
+            <div>
+                <div class="card-title">Informations générales</div>
+                <div class="card-subtitle">Métadonnées de l'exécution</div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Script</span>
+                    <span class="info-value">{{ script_name }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Navigateur</span>
+                    <span class="info-value">{{ browser }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Environnement</span>
+                    <span class="info-value">{{ environment }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Date</span>
+                    <span class="info-value">{{ date }}</span>
+                </div>
+                <div class="info-item full-width">
+                    <span class="info-label">Statut</span>
+                    <span class="info-value">
+                        {% if status == 'Réussi' %}
+                            <span class="status-badge status-success">
+                                <i class="fas fa-check-circle"></i> Réussi
+                            </span>
+                        {% else %}
+                            <span class="status-badge status-danger">
+                                <i class="fas fa-times-circle"></i> {{ status }}
+                            </span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- stdout -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon"><i class="fas fa-terminal"></i></div>
+            <div>
+                <div class="card-title">Sortie standard</div>
+                <div class="card-subtitle">stdout</div>
+            </div>
+        </div>
+        <div class="card-body">
+            <pre class="code-block">{{ output }}</pre>
+        </div>
+    </div>
+
+    <!-- stderr -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon" style="background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning);">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div>
+                <div class="card-title">Erreurs</div>
+                <div class="card-subtitle">stderr</div>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if errors %}
+                <pre class="code-block warning">{{ errors }}</pre>
+            {% else %}
+                <span class="no-errors">
+                    <i class="fas fa-check-circle"></i> Aucune erreur détectée.
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Download -->
+    <div style="padding: 0.5rem 0 2rem;">
+        <a href="{{ url_for('download_report_excel', test_id=test_id) }}" class="btn-download" target="_blank">
+            <i class="fas fa-download"></i> Télécharger le rapport Excel
+        </a>
+    </div>
+
+</div>
+</body>
+</html>

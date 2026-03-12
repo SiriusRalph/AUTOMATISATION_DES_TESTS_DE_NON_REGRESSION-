@@ -1,0 +1,184 @@
+<html xmlns="http://www.w3.org/1999/xhtml" class="login-pf"><head>
+ <link rel="stylesheet" href="/resources/zmjls/login/flightpass_5/css/intelInput.css">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Sign in to flightpass</title>
+    <link rel="icon" href="/resources/zmjls/login/flightpass_5/img/cart.png">
+       
+
+            <link href="/resources/zmjls/common/keycloak/web_modules/@patternfly/react-core/dist/styles/base.css" rel="stylesheet">
+            <link href="/resources/zmjls/common/keycloak/web_modules/@patternfly/react-core/dist/styles/app.css" rel="stylesheet">
+            <link href="/resources/zmjls/common/keycloak/node_modules/patternfly/dist/css/patternfly.min.css" rel="stylesheet">
+            <link href="/resources/zmjls/common/keycloak/node_modules/patternfly/dist/css/patternfly-additions.min.css" rel="stylesheet">
+            <link href="/resources/zmjls/common/keycloak/lib/pficon/pficon.css" rel="stylesheet">
+            <link href="/resources/zmjls/login/flightpass_5/css/login.css" rel="stylesheet">
+            <link href="/resources/zmjls/login/flightpass_5/css/tile.css" rel="stylesheet">
+</head>
+
+<body class="">
+<div class="login-pf-page">
+<div class="header-container">
+<div class="logo-login">
+<a href="https://flightpass.royalairmaroc.com/"><img class="ram" src="/resources/zmjls/login/flightpass_5/img/NlogoRam.png" alt=""></a>
+   <img class="oneWorld" src="/resources/zmjls/login/flightpass_5/img/oneWorld.png" alt="">
+</div>
+                <div class="pf-c-dropdown" id="kc-locale">
+                    <div id="kc-locale-wrapper" class="">
+                        <div id="kc-locale-dropdown" class="">
+                            <a href="#" id="kc-current-locale-link">English</a>
+                            <ul class="pf-c-dropdown__menu pf-m-align-right">
+                                    <li class="">
+                                        <a class="pf-c-dropdown__menu-item" href="/realms/flightpass/login-actions/detached-info?client_id=ram-flightpass-back&amp;kc_state_checker=03120cf3-9c1f-477e-a7fa-76399cf7cec5&amp;kc_locale=en">English</a>
+                                    </li>
+                                    <li class="">
+                                        <a class="pf-c-dropdown__menu-item" href="/realms/flightpass/login-actions/detached-info?client_id=ram-flightpass-back&amp;kc_state_checker=03120cf3-9c1f-477e-a7fa-76399cf7cec5&amp;kc_locale=fr">Français</a>
+                                    </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+</div>
+
+    <div id="kc-header" class="login-pf-page-header">
+        <div id="kc-header-wrapper" class="">flightpass</div>
+    </div>
+    
+    <div class="card-pf">
+  
+          <img class="cart" src="/resources/zmjls/login/flightpass_5/img/cart.png" alt="">
+        <header class="login-pf-header">
+       
+                <h1 id="kc-page-title">        We are sorry...
+</h1>
+      </header>
+      <div id="kc-content">
+        <div id="kc-content-wrapper">
+
+         
+
+           <div id="userNotExist" style="display: none;">
+              <div class="alert-error pf-c-alert pf-m-inline pf-m-error">
+                  <div class="pf-c-alert__icon">
+               
+                      <span class="fa fa-fw fa-exclamation-circle"></span>
+            
+                  </div>
+                      <span class="pf-c-alert__title kc-feedback-text">Your e-mail address seems to be invalid.</span>
+              </div>
+           </div>
+
+            <div id="userExist" style="display: none;">
+              <div class="alert-success pf-c-alert pf-m-inline pf-m-success">
+                  <div class="pf-c-alert__icon">
+               
+                      <span class="fa fa-fw fa-check-circle"></span>
+            
+                  </div>
+                      <span class="pf-c-alert__title kc-feedback-text">An email with instructions on how to change your password has just been sent to you.</span>
+              </div>
+            </div>
+
+
+
+
+        <div id="kc-error-message">
+            <p class="instruction">Cookie not found. Please make sure cookies are enabled in your browser.</p>
+        </div>
+
+
+            <form style="display: inline" action="https://flightpass.royalairmaroc.com/" method="get">
+  
+</form>
+
+          
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+    // Fonction pour extraire le lien de l'URL
+    function extractURL() {
+        var url = window.location.href; // Récupérer l'URL complète
+        return url;
+    }
+        const urlParams = new URLSearchParams(new URL(window.location.href).search);
+        const urlVariable = urlParams.get('isUserExist');
+
+     // initialisation des affichages none
+    document.getElementById('userNotExist').style.display = 'none';
+        document.getElementById('userExist').style.display = 'none';
+
+
+     // Utiliser la variable dans le corps de la page
+    if(urlVariable === 'false' )
+{
+    document.getElementById('userNotExist').style.display = 'block';
+        document.getElementById('userExist').style.display = 'none';
+}
+     if(urlVariable === 'true	' ){
+        document.getElementById('userNotExist').style.display = 'none';
+        document.getElementById('userExist').style.display = 'block';
+}
+</script>
+<script src="/resources/zmjls/login/flightpass_5/js/custom-email-validation.js" type="text/javascript"></script>
+<script src="/resources/zmjls/login/flightpass_5/js/intlTelInput.min.js"></script>
+<script>
+    var input = document.querySelector('[name="mobile"]');
+    var iti = window.intlTelInput(input, {
+        utilsScript: "/resources/zmjls/login/flightpass_5/js/utils.js"
+    });
+    const inputElement = document.getElementById('mobile');
+  if(inputElement) {
+    // Modify the input's value by prefixing it with "+212"
+    inputElement.value = '+212' + inputElement.value;
+    // Add an 'input' event listener to the input element
+
+// Add an 'input' event listener to the input element
+inputElement.addEventListener('input', function() {
+  // Ensure the value starts with '+' and is followed by up to 14 digits
+  let value = this.value;
+  
+  // Remove any character that is not a digit or the first '+' sign
+  value = value.replace(/(^\+)|[^0-9]+/g, function(match, p1) {
+      return p1 ? '+' : '';
+  });
+
+  // Check if the first character is not '+', prepend it
+  if (!value.startsWith('+')) {
+    value = '+' + value;
+  }
+
+  // Limit the total length to 16 characters (1 '+' and 15 digits)
+  this.value = value.substring(0, 16);
+});
+  }
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Function to get URL parameters
+    function getQueryParam(param) {
+        var queryString = window.location.search;
+        var urlParams = new URLSearchParams(queryString);
+        return urlParams.get(param);
+    }
+    
+    // Get the ui_locales parameter from the URL
+    var uiLocales = getQueryParam('ui_locales');
+    
+    // Find the link by ID or query selector and update its href attribute
+    var backToHomePageLink = document.querySelector('a[href="https://flightpass.royalairmaroc.com/"]');
+    if (backToHomePageLink && uiLocales) {
+        var newHref = backToHomePageLink.href + '?lg=' + uiLocales;
+        backToHomePageLink.href = newHref;
+    }
+});
+</script>
+
+
+</body></html>

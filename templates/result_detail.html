@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Détails du test</title>
+</head>
+<body>
+    <h1>Détails du test</h1>
+    <p><strong>Script :</strong> {{ result['script_name'] }}</p>
+    <p><strong>Navigateur :</strong> {{ result['browser'] }}</p>
+    <p><strong>Statut :</strong> {{ result['status'] }}</p>
+    <p><strong>Date :</strong> {{ result['date'] }}</p>
+    <!-- Tu peux ajouter ici le contenu du résultat si tu le stockes plus tard -->
+    <a href="{{ url_for('dashboard_dev') }}">⬅ Retour au Dashboard</a>
+</body>
+</html>

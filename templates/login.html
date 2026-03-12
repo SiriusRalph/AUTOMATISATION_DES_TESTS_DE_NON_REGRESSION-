@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash Techie Official</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ram-red: #C1272D;
+            --ram-red-dark: #8f1a1f;
+            --ram-red-glow: rgba(193, 39, 45, 0.25);
+            --gold: #b89a5a;
+            --gold-light: #d4b87a;
+            --cream: #f5f0e8;
+            --dark: #0d0a08;
+            --panel-bg: rgba(10, 7, 5, 0.82);
+            --border: rgba(184, 154, 90, 0.2);
+        }
+
+        body {
+            height: 100vh;
+            width: 100%;
+            background: var(--dark);
+            overflow: hidden;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        /* ── BACKGROUND ── */
+        .background {
+            position: fixed;
+            inset: 0;
+            background: url("../img/Ram.jpg") no-repeat center center / cover;
+            filter: brightness(0.35) saturate(0.7);
+            transform: scale(1.04);
+            animation: slowDrift 20s ease-in-out infinite alternate;
+        }
+        @keyframes slowDrift {
+            from { transform: scale(1.04) translateX(0); }
+            to   { transform: scale(1.04) translateX(-20px); }
+        }
+
+        /* Atmospheric overlay */
+        .background::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 50%, rgba(193,39,45,0.12) 0%, transparent 60%),
+                linear-gradient(to right, rgba(10,7,5,0.7) 0%, transparent 50%, rgba(10,7,5,0.4) 100%);
+        }
+
+        /* ── HEADER ── */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 22px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            border-bottom: 1px solid rgba(184,154,90,0.08);
+            backdrop-filter: blur(0px);
+        }
+
+        /* ── MAIN CONTAINER ── */
+        .container {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            display: flex;
+            width: min(1020px, 92vw);
+            height: min(620px, 90vh);
+            border-radius: 2px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow:
+                0 0 0 1px rgba(184,154,90,0.05),
+                0 40px 120px rgba(0,0,0,0.7),
+                0 0 80px var(--ram-red-glow);
+            animation: cardReveal .9s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes cardReveal {
+            from { opacity: 0; transform: translateY(28px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ── LEFT PANEL ── */
+        .item {
+            position: relative;
+            width: 44%;
+            flex-shrink: 0;
+            background: url("../img/Ram.jpg") no-repeat center center / cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 48px 44px;
+            overflow: hidden;
+        }
+
+        .item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                160deg,
+                rgba(10,7,5,0.55) 0%,
+                rgba(193,39,45,0.18) 50%,
+                rgba(10,7,5,0.85) 100%
+            );
+        }
+
+        /* Decorative diagonal line */
+        .item::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+            opacity: 0.5;
+        }
+
+        .item > * { position: relative; z-index: 1; }
+
+        .logo {
+            width: 130px;
+            filter: brightness(0) invert(1);
+            opacity: 0.95;
+        }
+
+        .text-item {
+            padding-bottom: 8px;
+        }
+
+        .label-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            margin-bottom: 18px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+        }
+        .label-tag::before {
+            content: '';
+            display: block;
+            width: 28px;
+            height: 1px;
+            background: var(--gold);
+        }
+
+        .text-item h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 48px;
+            font-weight: 300;
+            line-height: 1.1;
+            color: #fff;
+            letter-spacing: -0.01em;
+        }
+
+        .text-item h2 span {
+            display: block;
+            font-style: italic;
+            color: var(--gold-light);
+        }
+
+        .text-item p {
+            font-size: 13px;
+            margin-top: 16px;
+            color: rgba(255,255,255,0.55);
+            font-weight: 300;
+            letter-spacing: 0.04em;
+        }
+
+        /* ── RIGHT PANEL ── */
+        .login-section {
+            flex: 1;
+            position: relative;
+            background: var(--panel-bg);
+            backdrop-filter: blur(32px) saturate(1.2);
+            overflow: hidden;
+        }
+
+        /* Subtle noise texture */
+        .login-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .form-box {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 52px 56px;
+            transition: transform .65s cubic-bezier(0.76, 0, 0.24, 1), opacity .4s ease;
+        }
+
+        .form-box.register {
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform .65s cubic-bezier(0.76, 0, 0.24, 1), opacity .4s ease;
+            transition-delay: 0s, 0s;
+        }
+        .login-section.active .form-box.register {
+            transform: translateX(0);
+            opacity: 1;
+            transition-delay: .35s, .35s;
+        }
+
+        .form-box.login {
+            transform: translateX(0);
+            opacity: 1;
+            transition: transform .65s cubic-bezier(0.76, 0, 0.24, 1), opacity .4s ease;
+            transition-delay: .35s, .35s;
+        }
+        .login-section.active .form-box.login {
+            transform: translateX(-100%);
+            opacity: 0;
+            transition-delay: 0s, 0s;
+        }
+
+        /* Form heading */
+        .form-box h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 32px;
+            font-weight: 400;
+            color: #fff;
+            letter-spacing: 0.01em;
+            margin-bottom: 6px;
+        }
+
+        .form-subtitle {
+            font-size: 12px;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 38px;
+            font-weight: 300;
+        }
+
+        /* ── INPUT BOX ── */
+        .input-box {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .input-box input,
+        .input-box select {
+            width: 100%;
+            height: 52px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1px;
+            padding: 0 44px 0 16px;
+            font-size: 14px;
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            outline: none;
+            transition: border-color .3s ease, background .3s ease, box-shadow .3s ease;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .input-box select option {
+            background: #1a1410;
+            color: #fff;
+        }
+
+        .input-box input:focus,
+        .input-box select:focus {
+            border-color: var(--gold);
+            background: rgba(184,154,90,0.06);
+            box-shadow: 0 0 0 3px rgba(184,154,90,0.08);
+        }
+
+        .input-box input:valid:not(:placeholder-shown),
+        .input-box select:valid {
+            border-color: rgba(184,154,90,0.4);
+        }
+
+        .input-box label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            color: rgba(255,255,255,0.35);
+            pointer-events: none;
+            transition: all .25s ease;
+            font-weight: 300;
+            letter-spacing: 0.03em;
+        }
+
+        .input-box input:focus ~ label,
+        .input-box input:valid ~ label,
+        .input-box input:not(:placeholder-shown) ~ label {
+            top: -8px;
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold-light);
+            background: var(--panel-bg);
+            padding: 0 6px;
+            left: 10px;
+        }
+
+        /* Placeholder trick */
+        .input-box input { color-scheme: dark; }
+        input::placeholder { color: transparent; }
+
+        .input-box .icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 17px;
+            color: rgba(255,255,255,0.25);
+            transition: color .3s ease;
+            pointer-events: none;
+        }
+        .input-box input:focus ~ label + .icon,
+        .input-box:focus-within .icon {
+            color: var(--gold);
+        }
+
+        /* ── REMEMBER ROW ── */
+        .remember-password {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            font-size: 12.5px;
+        }
+
+        .remember-password label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.45);
+            cursor: pointer;
+            font-weight: 300;
+        }
+
+        .remember-password label input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            accent-color: var(--gold);
+            cursor: pointer;
+        }
+
+        .remember-password a {
+            color: rgba(255,255,255,0.35);
+            text-decoration: none;
+            font-size: 12px;
+            letter-spacing: 0.03em;
+            transition: color .2s;
+        }
+        .remember-password a:hover { color: var(--gold-light); }
+
+        /* ── BUTTON ── */
+        .btn {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 1px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow .3s ease, transform .15s ease;
+            background: linear-gradient(135deg, var(--ram-red) 0%, #a01f24 100%);
+            color: #fff;
+            margin-bottom: 22px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity .3s ease;
+        }
+
+        .btn:hover {
+            box-shadow: 0 8px 32px rgba(193,39,45,0.45), 0 2px 8px rgba(0,0,0,0.4);
+            transform: translateY(-1px);
+        }
+        .btn:hover::before { opacity: 1; }
+        .btn:active { transform: translateY(0); }
+
+        /* Gold line accent under button */
+        .btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0%; height: 2px;
+            background: var(--gold);
+            transition: width .4s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+        .btn:hover::after { width: 100%; }
+
+        /* ── FOOTER LINK ── */
+        .create-account {
+            text-align: center;
+            font-size: 12.5px;
+            color: rgba(255,255,255,0.3);
+            font-weight: 300;
+        }
+
+        .create-account a {
+            color: var(--gold-light);
+            font-weight: 500;
+            text-decoration: none;
+            letter-spacing: 0.03em;
+            transition: color .2s, letter-spacing .2s;
+        }
+        .create-account a:hover {
+            color: #fff;
+            letter-spacing: 0.06em;
+        }
+
+        /* Divider line */
+        .form-divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+        .form-divider::before,
+        .form-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+        .form-divider span {
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header"></header>
+    <div class="background"></div>
+
+    <div class="container">
+        <div class="card">
+
+            <!-- LEFT PANEL -->
+            <div class="item">
+                <img class="logo" src="{{ url_for('static', filename='img/RamLogo-removebg-preview.png') }}" alt="Royal Air Maroc Logo">
+
+                <div class="text-item">
+                    <div class="label-tag">Espace Membres</div>
+                    <h2>Welcome <span>To Royal Air Maroc</span></h2>
+                    <p>Create or log into your account</p>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="login-section" id="loginSection">
+
+                <!-- Login Form -->
+                <div class="form-box login">
+                    <form action="/login" method="POST">
+                    <h2>Sign In</h2>
+                    <p class="form-subtitle">Access your account</p>
+
+                    <div class="input-box">
+                        <input type="email" id="login-email" name="email" placeholder=" " required>
+                        <label for="login-email">Email address</label>
+                        <span class="icon"><i class='bx bxs-envelope'></i></span>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" id="login-password" name="password" placeholder=" " required>
+                        <label for="login-password">Password</label>
+                        <span class="icon"><i class='bx bxs-lock-alt'></i></span>
+                    </div>
+
+                    <div class="remember-password">
+                        <label><input type="checkbox" name="remember"> Remember me</label>
+                        <a href="#">Forgot password?</a>
+                    </div>
+
+                    <button class="btn" type="submit">Sign In</button>
+
+                    <div class="create-account">
+                        <p>New here? <a href="#" class="register-link">Create an account</a></p>
+                    </div>
+                    </form>
+                </div>
+
+                <!-- Register Form -->
+                <div class="form-box register">
+                    <form action="/signup" method="POST">
+                    <h2>Sign Up</h2>
+                    <p class="form-subtitle">Create your account</p>
+
+                    <div class="input-box">
+                        <input type="text" id="username" name="username" placeholder=" " required>
+                        <label for="username">Username</label>
+                        <span class="icon"><i class='bx bxs-user'></i></span>
+                    </div>
+                    <div class="input-box">
+                        <input type="email" id="signup-email" name="email" placeholder=" " required>
+                        <label for="signup-email">Email address</label>
+                        <span class="icon"><i class='bx bxs-envelope'></i></span>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" id="signup-password" name="password" placeholder=" " required>
+                        <label for="signup-password">Password</label>
+                        <span class="icon"><i class='bx bxs-lock-alt'></i></span>
+                    </div>
+                    <div class="input-box">
+                        <select name="role" required>
+                            <option value="" disabled selected>Select your role</option>
+                            <option value="testeur">Testeur</option>
+                            <option value="developeur">Développeur</option>
+                            <option value="chef">Chef de Projet</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <span class="icon"><i class='bx bxs-user-detail'></i></span>
+                    </div>
+
+                    <div class="remember-password">
+                        <label><input type="checkbox" name="agree" required> I agree to the terms</label>
+                    </div>
+
+                    <button class="btn" type="submit">Create Account</button>
+
+                    <div class="create-account">
+                        <p>Already have an account? <a href="#" class="login-link">Sign in</a></p>
+                    </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loginSection = document.getElementById('loginSection');
+        document.querySelectorAll('.register-link').forEach(el => {
+            el.addEventListener('click', e => { e.preventDefault(); loginSection.classList.add('active'); });
+        });
+        document.querySelectorAll('.login-link').forEach(el => {
+            el.addEventListener('click', e => { e.preventDefault(); loginSection.classList.remove('active'); });
+        });
+    </script>
+</body>
+</html>
