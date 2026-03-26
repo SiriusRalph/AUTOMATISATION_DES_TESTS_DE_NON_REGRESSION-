@@ -8,7 +8,7 @@ import subprocess
 from datetime import datetime
 from flask import jsonify
 from flask import make_response, render_template
-from weasyprint import HTML
+from xhtml2pdf import pisa
 from flask import send_file
 from openpyxl import Workbook
 import io
@@ -251,6 +251,7 @@ def view_result_detail():
 
 
 @app.route('/generate_pdf/<int:test_id>')
+@app.route('/generate_pdf/<int:test_id>')
 def generate_pdf(test_id):
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
@@ -272,7 +273,9 @@ def generate_pdf(test_id):
     }
 
     html = render_template('result_pdf.html', **data)
-    pdf = HTML(string=html).write_pdf()
+    pdf_buffer = io.BytesIO()
+    pisa.CreatePDF(html, dest=pdf_buffer)
+    pdf = pdf_buffer.getvalue()
 
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
