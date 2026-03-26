@@ -1,0 +1,14 @@
+```
+# Google OAuth secrets
+client_secret*.json
+secrets*.json
+
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
