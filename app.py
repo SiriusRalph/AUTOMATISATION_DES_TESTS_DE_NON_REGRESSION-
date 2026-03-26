@@ -1,14 +1,12 @@
-
 import os
 os.environ["PYTHONUTF8"] = "1"
+import sys
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask import send_from_directory
 import sqlite3
 import subprocess
-import os
 from datetime import datetime
 from flask import jsonify
-import json
 from flask import make_response, render_template
 from weasyprint import HTML
 from flask import send_file
@@ -16,19 +14,14 @@ from openpyxl import Workbook
 import io
 
 app = Flask(__name__)
-app.secret_key = 'secretkey'  # Obligatoire pour les sessions
+app.secret_key = 'secretkey'
 
 
-
-
-
-# Connexion à la base de données
 def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
 
-# Page principale : login + signup
 @app.route('/')
 def index():
     return render_template('login.html')
@@ -44,15 +37,11 @@ def download_report_excel():
     wb = Workbook()
     ws = wb.active
     ws.title = "Rapports Tests"
-
-    # Écrire l'entête
     ws.append(["ID", "Script", "Navigateur", "Statut", "Date", "Sortie", "Erreurs"])
 
-    # Écrire les données
     for row in rows:
         ws.append(row)
 
-    # Sauvegarder dans un buffer mémoire (pas sur disque)
     output = io.BytesIO()
     wb.save(output)
     output.seek(0)
@@ -63,7 +52,6 @@ def download_report_excel():
                      mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
 
-#Route pour le Dashboard
 @app.route('/dashboard_dev', methods=['GET', 'POST'])
 def dashboard_dev():
     output = ""
@@ -89,24 +77,20 @@ def dashboard_dev():
                 filepath = f'scripts/{file.filename}'
                 file.save(filepath)
                 print(f"File saved at: {filepath}, exists: {os.path.exists(filepath)}")
-
                 output = f"Fichier '{file.filename}' importé avec succès."
             else:
                 error = "Fichier invalide ou manquant."
 
         else:
             error = "Action inconnue."
-    # Lister tous les scripts disponibles dans le dossier /scripts
+
     script_files = []
     scripts_path = os.path.join(os.getcwd(), 'scripts')
     if os.path.exists(scripts_path):
         script_files = [f for f in os.listdir(scripts_path) if f.endswith('.py') or f.endswith('.java')]
 
-    # Connexion à la base
     conn = get_db_connection()
     cursor = conn.cursor()
-
-    # Récupérer les résultats
     cursor.execute("SELECT * FROM test_results ORDER BY date DESC")
     test_results = cursor.fetchall()
     conn.close()
@@ -114,12 +98,11 @@ def dashboard_dev():
     return render_template("dashboard_dev.html", output=output, error=error, script_files=script_files, test_results=test_results)
 
 
-# Route pour s'inscrire
 @app.route('/signup', methods=['POST'])
 def signup():
     email = request.form['email']
     password = request.form['password']
-    role = request.form['role']  # Tu dois ajouter un champ "role" dans le formulaire signup
+    role = request.form['role']
 
     conn = get_db_connection()
     c = conn.cursor()
@@ -131,6 +114,7 @@ def signup():
         return "❌ Email déjà utilisé."
     finally:
         conn.close()
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -152,9 +136,7 @@ def login():
             flash("❌ Email ou mot de passe incorrect.")
             return render_template("login.html")
 
-    # Handle GET request → just show the form
     return render_template("login.html")
-
 
 
 @app.route('/download_script/<filename>')
@@ -162,10 +144,9 @@ def download_script(filename):
     scripts_dir = os.path.join(os.getcwd(), 'scripts')
     return send_from_directory(directory=scripts_dir, path=filename, as_attachment=True)
 
+
 SCRIPT_FOLDER = os.path.join(os.getcwd(), "scripts")
 
-from datetime import datetime
-import sqlite3
 
 @app.route('/run_test', methods=['POST'])
 def run_test():
@@ -179,9 +160,8 @@ def run_test():
     script_path = os.path.join(SCRIPT_FOLDER, test_script)
 
     try:
-        python_path = r"C:\Users\PC MAROC\AppData\Local\Programs\Python\Python39\python.exe"
         result = subprocess.run(
-            [python_path, script_path, browser, environment],
+            [sys.executable, script_path, browser, environment],
             capture_output=True,
             text=True
         )
@@ -189,14 +169,12 @@ def run_test():
         output = result.stdout
         errors = result.stderr
 
-        # ➕ Déterminer le statut
         if result.returncode == 0:
             status = "Réussi"
         else:
             status = "Échoué"
 
-        # ➕ Insérer dans la base
-        conn = sqlite3.connect("database.db")  # remplace "ta_base.db" par le vrai nom
+        conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
         cursor.execute("""
             INSERT INTO test_results (script_name, browser, status, date, stdout, stderr)
@@ -210,7 +188,6 @@ def run_test():
             errors
         ))
         test_id = cursor.lastrowid
-
         conn.commit()
         conn.close()
 
@@ -223,38 +200,32 @@ def run_test():
             environment=environment,
             status=status,
             date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            test_id=test_id  # on passe l'id du test ici
+            test_id=test_id
         )
-
 
     except Exception as e:
         return f"Erreur pendant l'exécution du test : {str(e)}", 500
 
 
-
 def save_test_result(script_name, browser, status):
-    conn = sqlite3.connect('database.db')  # ⛔ remplace par le bon nom
+    conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
     date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
     cursor.execute("""
         INSERT INTO test_results (script_name, browser, status, date)
         VALUES (?, ?, ?, ?)
     """, (script_name, browser, status, date))
-
     conn.commit()
-    print("✅ Insertion réussie dans test_results")
     conn.close()
+
+
 @app.route('/view_result_detail', methods=['POST'])
 def view_result_detail():
     script_name = request.form['script_name']
     date = request.form['date']
 
-    # Connexion à la base de données
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-
-    # 🔍 Récupère toutes les colonnes utiles du test
     c.execute("""
         SELECT script_name, browser, status, date, stdout, stderr
         FROM test_results
@@ -265,7 +236,6 @@ def view_result_detail():
 
     if result:
         script_name, browser, status, date, output, errors = result
-
         return render_template(
             "result.html",
             script_name=script_name,
@@ -274,7 +244,7 @@ def view_result_detail():
             date=date,
             output=output,
             errors=errors,
-            environment="Environnement inconnu"  # Si tu ne l’as pas encore stocké dans la base
+            environment="Environnement inconnu"
         )
     else:
         return "Résultat non trouvé", 404
@@ -298,7 +268,7 @@ def generate_pdf(test_id):
         'date': row[3],
         'output': row[4],
         'errors': row[5],
-        'environment': 'Environnement inconnu'  # ou tu peux aussi sauvegarder l'environnement dans ta base et récupérer ici
+        'environment': 'Environnement inconnu'
     }
 
     html = render_template('result_pdf.html', **data)
@@ -307,7 +277,6 @@ def generate_pdf(test_id):
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = f'attachment; filename=rapport_test_{test_id}.pdf'
-
     return response
 
 
@@ -319,11 +288,9 @@ def get_test_results():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Get total count
     cursor.execute("SELECT COUNT(*) FROM test_results")
     total = cursor.fetchone()[0]
 
-    # Get paginated results
     offset = (page - 1) * per_page
     cursor.execute("""
         SELECT id, script_name, browser, status, date 
@@ -343,7 +310,6 @@ def get_test_results():
         })
 
     conn.close()
-
     return jsonify({
         'results': results,
         'total': total,
@@ -362,7 +328,6 @@ def get_scripts():
     if os.path.exists(scripts_path):
         script_files = sorted([f for f in os.listdir(scripts_path) if f.endswith(('.py', '.java'))])
 
-    # Paginate the results
     total = len(script_files)
     start = (page - 1) * per_page
     end = start + per_page
@@ -374,5 +339,8 @@ def get_scripts():
         'page': page,
         'per_page': per_page
     })
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
