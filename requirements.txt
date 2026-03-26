@@ -30,7 +30,7 @@ trio==0.33.0
 trio-websocket==0.12.2
 typing_extensions==4.15.0
 urllib3==2.6.3
-xhtml2pdf==0.2.16
+reportlab==4.4.10
 webencodings==0.5.1
 websocket-client==1.9.0
 Werkzeug==3.1.6

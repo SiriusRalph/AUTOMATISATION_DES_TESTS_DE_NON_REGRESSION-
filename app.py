@@ -8,7 +8,8 @@ import subprocess
 from datetime import datetime
 from flask import jsonify
 from flask import make_response, render_template
-from xhtml2pdf import pisa
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 from flask import send_file
 from openpyxl import Workbook
 import io
@@ -250,7 +251,7 @@ def view_result_detail():
         return "Résultat non trouvé", 404
 
 
-@app.route('/generate_pdf/<int:test_id>')
+
 @app.route('/generate_pdf/<int:test_id>')
 def generate_pdf(test_id):
     conn = sqlite3.connect("database.db")
@@ -262,22 +263,43 @@ def generate_pdf(test_id):
     if not row:
         return "Rapport non trouvé", 404
 
-    data = {
-        'script_name': row[0],
-        'browser': row[1],
-        'status': row[2],
-        'date': row[3],
-        'output': row[4],
-        'errors': row[5],
-        'environment': 'Environnement inconnu'
-    }
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
 
-    html = render_template('result_pdf.html', **data)
-    pdf_buffer = io.BytesIO()
-    pisa.CreatePDF(html, dest=pdf_buffer)
-    pdf = pdf_buffer.getvalue()
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, height - 50, "Rapport de Test")
 
-    response = make_response(pdf)
+    p.setFont("Helvetica", 12)
+    p.drawString(50, height - 90,  f"Script     : {row[0]}")
+    p.drawString(50, height - 110, f"Navigateur : {row[1]}")
+    p.drawString(50, height - 130, f"Statut     : {row[2]}")
+    p.drawString(50, height - 150, f"Date       : {row[3]}")
+
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, height - 190, "Sortie :")
+    p.setFont("Helvetica", 10)
+    y = height - 210
+    for line in (row[4] or "").splitlines()[:30]:
+        p.drawString(50, y, line[:100])
+        y -= 15
+        if y < 100:
+            break
+
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y - 20, "Erreurs :")
+    p.setFont("Helvetica", 10)
+    y = y - 40
+    for line in (row[5] or "").splitlines()[:20]:
+        p.drawString(50, y, line[:100])
+        y -= 15
+        if y < 50:
+            break
+
+    p.save()
+    buffer.seek(0)
+
+    response = make_response(buffer.read())
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = f'attachment; filename=rapport_test_{test_id}.pdf'
     return response
